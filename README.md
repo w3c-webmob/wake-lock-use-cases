@@ -1,4 +1,4 @@
-prevents-sleep-use-cases
+Wake-lock use cases
 ========================
 
-An exploration of applications that prevent devices from going to sleep
+An exploration of applications that prevent devices from going to sleep.
