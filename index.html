@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Wake Lock: Use cases
+    </title>
+    <meta charset="utf-8">
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class=
+    'remove'>
+</script>
+    <script class='remove'>
+// (this is to make tidy happy)
+    var respecConfig = {
+        specStatus:           "unofficial",
+        shortName:            "wake-lock",
+        //publishDate:          "2014-04-03",
+        //previousPublishDate:  "2014-02-20",
+        //previousMaturity:     "",
+        edDraftURI:           "https://w3c-webmob.github.io/screen-wake-use-cases/",
+        editors:  [
+            {
+              name: "Marcos Caceres"
+            },
+                         {
+              name: "Natasha Rooney"
+            },
+                         {
+              name: "Dominique Hazael-Massieux"
+            }
+        ],
+                wg: 'Web and Mobile Interest Group',
+                wgURI: 'http://www.w3.org/Mobile/IG/',
+                wgPublicList: 'public-web-mobile',
+                wgPatentURI: '',
+                otherLinks: [{
+                        key: 'Repository',
+                        data: [{
+                                value: 'We are on Github.',
+                                href: 'https://github.com/w3c-webmob/screen-wake-use-cases'
+                        }, {
+                                value: 'File a bug.',
+                                href: 'https://github.com/w3c-webmob/screen-wake-use-cases/issues'
+                        }, {
+                                value: 'Commit history.',
+                                href: 'https://github.com/w3c-webmob/screen-wake-use-cases/commits/'
+                        }]
+                }]
+        };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        The web platform currently lacks a means to prevent a device from
+        entering a power-saving state (i.e., some means that prevents an aspect
+        of the system from "going to sleep"). As this document tries to
+        demonstrate, there are strong use cases where applications need to
+        temporarily prevent some aspect of the device from entering a
+        power-saving state. As this functionality is common on other platforms,
+        this document tries to make the case that this functionality should
+        also be made available to the web platform.
+      </p>
+      <p>
+        To understand the use cases that motivate an application from
+        preventing a device from entering a power-saving state we examined a
+        set of applications running on iOS, Android, and FireFox OS. By looking
+        at these native applications, and the conditions under which they
+        prevent a device from entering a power-saving state, we've come up with
+        a set of <a>requirements</a>. We hope that the web community can
+        address these requirements by creating a specification that affords
+        similar functionality to the web platform.
+      </p>
+    </section>
+    <section id="sotd">
+      <p>
+        This is a work in progress.
+      </p>
+    </section>
+    <section>
+      <h2>
+        Why we need wake locks on the Web
+      </h2>
+      <p>
+        For tasks such as watching a video full-screen, user agents have, for a
+        long time now, prevented the screen from going to sleep automatically.
+        Naturally, users would be annoyed if they were watching a movie and
+        constantly needed to move a mouse or poke at the screen of a device to
+        stop the screen from going black (something that was not uncommon a few
+        years back - and something not too uncommon still when people are
+        presenting from Web browsers during conferences, for instance).
+      </p>
+      <p>
+        As computing devices have become increasingly mobile, users find
+        themselves relying on mobile devices to assist them with everyday tasks
+        where it is not always practical or desirable to touch the device to
+        keep it "awake". These can be simple things, like using the phone as a
+        flashlight, to complex tasks such as cooking or allowing the phone to
+        navigate us to some destination while driving. In addition, touch
+        enabled devices have become commodified enough that they can be used as
+        interactive signage. Some of these use cases are illustrated in the
+        figure below.
+      </p>
+      <figure>
+        <img src="images/contexts.jpg" alt="" style=
+        "width: 100%; max-width: 800px">
+        <figcaption>
+          Examples of tasks and contexts in which it is nessesary to prevent
+          the screen from going to sleep: from right to left, navigation from
+          one location to another, reading and e-book, preparing a meal by
+          following a recipe, and using a touch-enabled device as signage. In
+          this final case, the device displays if a particular meeting room is
+          booked - and allows users to manage booking a room by interacting
+          with the screen, which is always on.
+        </figcaption>
+      </figure>
+      <p>
+        On the flip-side, keeping the screen on is not the only kind of "wake
+        lock" applications require. It is well-known that, under normal
+        conditions, the display of a device consumes a high percentage of a
+        device's battery. Only keeping the screen on when absolutely necessary
+        can greatly assist in prolonging the battery life of a device
+        throughout a day.
+      </p>
+      <p>
+        As mobile devices are generally not as powerful as desktop class
+        machines, and because of the uncertain network conditions under which
+        these devices operate, some tasks can take a long time to complete -
+        longer than users are willing to wait before putting their device back
+        into their pocket, or sometimes longer than the default timeout most
+        devices have to put the screen to sleep (e.g., 1 minute or there
+        abouts). Consider importing and processing a set of contacts over a
+        slow network connection, which can sometimes take minutes. It would be
+        unrealistic to expect the user to hold their phone in their hand while
+        they wait for a synchronization task to complete: users should be able
+        to switch off the screen of a device and trust that an application will
+        do its best to complete a certain task in the background.
+      </p>
+      <p>
+        In other words, the user shutting off the screen doesn't mean that an
+        application must stop running and the device enter a low-power state.
+        An application may need to intervene and finish what it's doing or it
+        risks data-loss. In another concrete example, a may compose and email
+        with a large photo attachment. When they press send, they just as
+        quickly press the power button to turn off the screen and put the phone
+        back in their pocket. In such a situation, as happens with iOS's mail
+        app, the application continues to run by sending the email before
+        putting the phone in a low-power state. Note that this system level
+        lock includes keeping the WIFI and cellular radio from also shutting
+        down or entering a low power state while some task is being performed.
+      </p>
+    </section>
+    <section>
+      <h2>
+        Methodology and limitations
+      </h2>
+      <p>
+        We used <a href=
+        "http://en.wikipedia.org/wiki/Accidental_sampling">convenience
+        sampling</a> to select the applications in this document. That is, we
+        selected applications that we knew prevented the screen from going to
+        sleep when the application was being used to perform some particular
+        action. We also reached out to people on twitter for suggestions as to
+        which applications we should look at. Suggestions were captured as
+        "<a href=
+        "https://github.com/w3c-webmob/screen-wake-use-cases/issues">issues</a>"
+        in our GitHub repository.
+      </p>As stated on Wikipedia's entry about <a href=
+      "http://en.wikipedia.org/wiki/Accidental_sampling">convenience
+      sampling</a>: "[one] cannot scientifically make generalizations about the
+      total population from this sample because it would not be representative
+      enough." Regardless, we view the range of applications we collected as
+      exemplifying common use cases for this kind of functionality. As such, we
+      still created requirements from what we observed across applications and
+      platforms. We encourage the community to contribute more, or
+      contradictory/abuse-cases, examples to the Web Mobile IG. You can do this
+      via a pull request to the <a href=
+      "https://github.com/w3c-webmob/screen-wake-use-cases">screen-wake
+      repository on GitHub</a>.
+      <section>
+        <h3>
+          How we looked at the apps
+        </h3>
+        <p>
+          For each application, we asked:
+        </p>
+        <ul>
+          <li>What motivates this application to prevent the device from going
+          to sleep?
+          </li>
+          <li>What can this application do by preventing the screen from going
+          to sleep? (e.g., allow the application to be controlled via voice
+          input)
+          </li>
+          <li>When is the wake lock applied and released?
+          </li>
+        </ul>
+      </section>
+    </section>
+    <section>
+      <h2>
+        Support on native platforms
+      </h2>
+      <p>
+        Below is a list of APIs from native platforms that developers can make
+        use of to prevent a device from going to sleep. The list shows that
+        this functionality is common available to developers without
+        significant security restrictions. It is important to note that some
+        platforms differentiate between putting the system to sleep and putting
+        the display to sleep. Requesting that the system (or "CPU") not sleep,
+        which allowing the display to sleep, allows long running tasks to
+        complete before the device puts itself to sleep.
+      </p>
+      <dl>
+        <dt>
+          iOS:
+        </dt>
+        <dd>
+          <a href=
+          "https://developer.apple.com/library/ios/documentation/uikit/reference/UIApplication_Class/Reference/Reference.html#//apple_ref/occ/instp/UIApplication/idleTimerDisabled">
+          UIApplication.idleTimerDisabled</a>
+        </dd>
+        <dt>
+          Android:
+        </dt>
+        <dd>
+          <a href=
+          "http://developer.android.com/reference/android/view/View.html#setKeepScreenOn%28boolean%29">
+          android.view.View.setKeepScreenOn</a>
+        </dd>
+        <dt>
+          Windows 8
+        </dt>
+        <dd>
+          <a href=
+          "http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff941090%28v=vs.105%29.aspx">
+          Microsoft.Phone.Shell.UserIdleDetectionMode.Disabled</a>
+        </dd>
+        <dt>
+          FirefoxOS:
+        </dt>
+        <dd>
+          <a href=
+          "https://developer.mozilla.org/en-US/docs/Web/API/Navigator.requestWakeLock">
+          navigator.requestWakeLock()</a>
+        </dd>
+        <dt>
+          ChromeApps:
+        </dt>
+        <dd>
+          <a href=
+          "https://developer.chrome.com/extensions/power.html">chrome.power.requestKeepAwake()</a>
+          - supporting both "system" or "display".
+        </dd>
+        <dt>
+          Tizen:
+        </dt>
+        <dd>
+          <a href=
+          "https://developer.tizen.org/dev-guide/2.2.0/org.tizen.web.device.apireference/tizen/power.html#requestidp102368">
+          tizen.power.request(, …)</a>. Note that tizen supports both "SCREEN"
+          and "CPU".
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Brazil 2014
+      </h2>
+      <figure>
+        <img src="images/brazil2014.png" alt="">
+        <figcaption>
+          The "Brazil 2014" iOS app allows users to keep up with news related
+          to the 2014 World Cup.
+        </figcaption>
+      </figure>
+      <dl>
+        <dt>
+          What motivates this application to prevent the device from going to
+          sleep?
+        </dt>
+        <dd>
+          The application allows users to follow football matches in real-time:
+          receiving updates as the match is taking place. Allowing users to
+          follow the action in real-time seems to be the primary motivator.
+        </dd>
+        <dt>
+          What can this application do by preventing the screen from going to
+          sleep?
+        </dt>
+        <dd>
+          During a match, the user can simply place their device on a surface
+          for convenient viewing - or they can simply hold the device in their
+          hand. Without requiring any user interaction, light-weight textual
+          and graphical information is streamed to the device and automatically
+          displayed on screen . This means that the user does not need to
+          interact directly with the device to receive updates of what is
+          happening during a match. Note that this application does not stream
+          live video.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          The wake lock is only applied when the user opens the "action" screen
+          of the application and if, and only if, a match is actually taking
+          place. The wake lock is released as soon as match is finished.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Google Play Books
+      </h2>
+      <figure>
+        <img src="images/books.png" alt="">
+        <figcaption>
+          Books on Google Play is an Android application for managing and
+          reading a collection of e-books.
+        </figcaption>
+      </figure>
+      <dl>
+        <dt>
+          What motivates this application to prevent the device from going to
+          sleep?
+        </dt>
+        <dd>
+          The Screen stays 'awake' allowing users to continue reading and
+          e-book without having to continuously poke at the screen to keep the
+          device awake.
+        </dd>
+        <dt>
+          What can this application do by preventing the screen from going to
+          sleep?
+        </dt>
+        <dd>
+          Allow a user the read at their own pace without needing to constantly
+          poke the screen to keep it awake. It also means that users can keep
+          their hands away from the screen until they need to turn the page.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          The lock is applied only once the user opens a book. It is released
+          once the user returns to the book selection menu. Additionally, if
+          the user doesn't turn the page of a book after about 5 minutes, the
+          application automatically releases the wake lock.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Nigela's quick collection
+      </h2>
+      <figure>
+        <img src="images/nigela.png" alt="">
+        <figcaption>
+          Nigela's quick collections is a cooking application that contains a
+          collection of recipes and a set of steps for how to prepare each
+          dish.
+        </figcaption>
+      </figure>
+      <dl>
+        <dt>
+          What motivates this application to prevent the device from going to
+          sleep?
+        </dt>
+        <dd>
+          Allowing users to prepare dishes while simultaneously interacting
+          with the recipes of the application (recipes are spread across
+          multiple screens and require multiple steps to be followed in order).
+          It would be really annoying if the device went to sleep while the
+          user was trying to follow a recipe (as this involves a lot of
+          multitasking on the side of the user and their hands might not be
+          available or their hands might be dirty with food or wet).
+        </dd>
+        <dt>
+          What can this application do by preventing the screen from going to
+          sleep?
+        </dt>
+        <dd>
+          As the user's hands could be dirty or wet, the app keeps the screen
+          on and allows the user to navigate the application using voice
+          commands instead.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          The wake lock is only engaged with the user explicitly opens up a
+          recipe. When the user leaves a recipe and returns to, say, the main
+          screen, the wake lock is released.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Google Maps
+      </h2>
+      <dl>
+        <dt>
+          What motivates this application to prevent the device from going to
+          sleep?
+        </dt>
+        <dd>
+          Safety. Keeping the screen on allows the user to periodically glance
+          at their phone to get oriented while navigating to their destination.
+          On iOS, even if the user turns off the screen, the application
+          continues to run and notifies the when they need to make a turn.
+        </dd>
+        <dt>
+          What can this application do by preventing the screen from going to
+          sleep? (e.g., allow the application to be controlled via voice input)
+        </dt>
+        <dd>
+          When in navigation mode, the screen will stay 'awake' so users do not
+          need to physically interact with the device when navigating.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          The screen lock is only applied when the user begins navigating. The
+          screen lock is released when the user stops navigating or reaches
+          their destination.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Firefox OS Contacts
+      </h2>
+      <dl>
+        <dt>
+          What motivates this application to prevent the device from going to
+          sleep?
+        </dt>
+        <dd>
+          Importing of contacts and performing long-lived tasks
+        </dd>
+        <dt>
+          What can this application do by preventing the screen from going to
+          sleep?
+        </dt>
+        <dd>
+          Complete running a task without requiring the user to keep the screen
+          on.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          As soon as the import task is complete.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Requirements
+      </h2>
+      <p>
+        Any specification seeking to address these <dfn>requirements</dfn>:
+      </p>
+      <ol>
+        <li>MUST support requesting a wake lock on the system and on the
+        display. The display being the screen or primary output modality of the
+        device. The system meaning that the device can put the screen to sleep,
+        but MUST continue running a task until an application releases the lock
+        on the system. Keeping the screen awake MUST also keep the system
+        awake.
+        </li>
+        <li>MUST allow developers to release a previously requested wake lock.
+        </li>
+        <li>SHOULD allow scripts to check if an application already holds a
+        particular kind of lock.
+        </li>
+        <li>MUST make the user agent ultimately responsible for managing the
+        wake locks. The user agent MAY automatically release the lock for
+        security reasons, and MUST release all locks when an application is
+        closed. It MAY also release the lock after some amount of inactivity.
+        </li>
+        <li>MUST NOT be applied solely at the application level (e.g., just
+        once when the application starts). Instead, developers MUST be able to
+        request wake locks at arbitrary moments in time to help the user
+        complete a task.
+        </li>
+        <li> MUST be possible for the end user to override the  wake lock on the screen (e.g.,
+        by pressing the power button on the device, which puts the screen to
+        sleep). Applications MUST be notified when such a thing happens, so
+        they can request a system lock if they need to complete some task.
+        </li>
+      </ol>
+    </section>
+  </body>
+</html>
