@@ -81,14 +81,17 @@
         Why we need wake locks on the Web
       </h2>
       <p>
-        For tasks such as watching a video full-screen, user agents have, for a
+        For tasks such as watching a video full-screen user agents have, for a
         long time now, prevented the screen from going to sleep automatically.
-        Naturally, users would be annoyed if they were watching a movie and
+        Naturally users would be annoyed if they were watching a movie and
         constantly needed to move a mouse or poke at the screen of a device to
         stop the screen from going black (something that was not uncommon a few
         years back - and something not too uncommon still when people are
         presenting from Web browsers during conferences, for instance).
       </p>
+      <h3>
+        Keeping a screen 'awake'
+      </h3>
       <p>
         As computing devices have become increasingly mobile, users find
         themselves relying on mobile devices to assist them with everyday tasks
@@ -113,6 +116,9 @@
           with the screen, which is always on.
         </figcaption>
       </figure>
+      <h3>
+        Keeping a running task from stopping when the screen goes 'to sleep'
+      </h3>
       <p>
         On the flip-side, keeping the screen on is not the only kind of "wake
         lock" applications require. It is well-known that, under normal
@@ -136,16 +142,16 @@
         do its best to complete a certain task in the background.
       </p>
       <p>
-        In other words, the user shutting off the screen doesn't mean that an
-        application must stop running and the device enter a low-power state.
+        In other words the user shutting off the screen doesn't mean that an
+        application must stop running and have the device enter a low-power state.
         An application may need to intervene and finish what it's doing or it
-        risks data-loss. In another concrete example, a may compose and email
-        with a large photo attachment. When they press send, they just as
+        risks data-loss. In another concrete example a user may compose an email
+        with a large photo attachment. When they press send they just as
         quickly press the power button to turn off the screen and put the phone
         back in their pocket. In such a situation, as happens with iOS's mail
         app, the application continues to run by sending the email before
         putting the phone in a low-power state. Note that this system level
-        lock includes keeping the WIFI and cellular radio from also shutting
+        lock includes keeping the WiFi and cellular radio from also shutting
         down or entering a low power state while some task is being performed.
       </p>
     </section>
