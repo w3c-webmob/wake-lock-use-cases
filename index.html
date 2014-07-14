@@ -48,6 +48,7 @@
     };
     </script>
     <style>
+/*(this is to make tidy happy)*/        
         figure{
             margin: 0;
             text-align:center;
@@ -56,6 +57,15 @@
 
         figure > img {
             border: thin solid black;       
+        }
+                 
+        img.stretchy{
+            width: 100%;
+            height: auto;
+            max-width: -moz-min-content;
+            max-width: -webkit-min-content;
+            max-width: -ms-min-content;
+            max-width: min-content;
         }
     </style>
   </head>
@@ -117,8 +127,8 @@
           illustrated in the figure below.
         </p>
         <figure>
-          <img src="images/contexts.jpg" alt="" style=
-          "width: 100%; max-width: 800px">
+          <img src="images/contexts.jpg" alt="" class="stretchy" width="800"
+          height="154">
           <figcaption>
             Examples of tasks and contexts in which it is necessary to prevent
             the screen from going to sleep: from right to left, navigation from
@@ -138,11 +148,11 @@
           On the flip-side, keeping the screen on is not the only kind of "wake
           lock" applications require. There is also use cases that there needs
           to be a kind of lock that also keeps the system awake for a short
-          amount of time to allow arbitrary tasks to complete. It is
-          well-known that, under normal conditions, the display of a device
-          consumes a high percentage of a device's battery. Only keeping the
-          screen on when absolutely necessary can greatly assist in prolonging
-          the battery life of a device throughout a day.
+          amount of time to allow arbitrary tasks to complete. It is well-known
+          that, under normal conditions, the display of a device consumes a
+          high percentage of a device's battery. Only keeping the screen on
+          when absolutely necessary can greatly assist in prolonging the
+          battery life of a device throughout a day.
         </p>
         <p>
           As mobile devices are generally not as powerful as desktop class
@@ -268,7 +278,7 @@
         <dd>
           <a href=
           "http://msdn.microsoft.com/en-us/library/windowsphone/develop/ff941090%28v=vs.105%29.aspx">
-          Microsoft.Phone.Shell.UserIdleDetectionMode.Disabled</a>
+          Idle detection for Windows Phone 8</a>
         </dd>
         <dt>
           FirefoxOS:
@@ -303,7 +313,8 @@
         Brazil 2014
       </h2>
       <figure>
-        <img src="images/brazil2014.jpg" alt="">
+        <img src="images/brazil2014.jpg" width="188" height="324" alt="" class=
+        "stretchy">
         <figcaption>
           The "Brazil 2014" iOS app allows users to keep up with news related
           to the 2014 World Cup.
@@ -346,8 +357,8 @@
         Google Play Books
       </h2>
       <figure>
-	<img src="images/books.jpg" style=
-	  "width: 100%; max-width: 350px" alt="">
+        <img class="stretchy" src="images/books.jpg" width="382" height="238"
+        alt="">
         <figcaption>
           Books on Google Play is an Android application for managing and
           reading a collection of e-books.
@@ -397,7 +408,8 @@
         Nigela's quick collections
       </h2>
       <figure>
-        <img src="images/nigela.jpg" alt="">
+        <img class="stretchy" src="images/nigela.jpg" width="205" height="292"
+        alt="">
         <figcaption>
           Nigela's quick collections is a cooking application that contains a
           collection of recipes and a set of steps for how to prepare each
@@ -450,7 +462,8 @@
         Google Maps
       </h2>
       <figure>
-        <img src="images/maps.jpg" alt="">
+        <img src="images/maps.jpg" alt="" class="stretchy" height="336" width=
+        "192">
         <figcaption>
           Google maps on iOS is a popular maps application that supports turn
           by turn navigation.
@@ -495,7 +508,8 @@
         Firefox OS Contacts
       </h2>
       <figure>
-        <img src="images/contacts.jpg" alt="">
+        <img src="images/contacts.jpg" alt="" width="192" height="288" class=
+        "stretchy">
         <figcaption>
           Firefox OS's contacts application allows a user to manage contacts,
           as well as import friends from Facebook as contacts.
@@ -559,9 +573,6 @@
         needing to worry that the screen will power off unexpectedly.
         </li>
       </ul>
-      <p>&nbsp;
-        
-      </p>
     </section>
     <section>
       <h2>
@@ -615,6 +626,10 @@
         <li>MAY allow a means to hint to the user agent how long a lock is to
         be held (e.g., "keep the screen on for at least 5 mins").
         </li>
+        <li>MUST allow the end user to have ultimate control over which
+        documents have control over a wake locks (e.g., not allowing a page to
+        get get any kind of wake lock without user opt-in).
+        </li>
       </ol>
     </section>
     <section class="appendix">
@@ -631,6 +646,15 @@
         changes in orientation. This is not the case in Android, where changing
         the orientation of the device has no effect - even if the application
         supports multiple orientations.
+      </p>
+    </section>
+    <section class="appendix">
+      <h2>
+        Acknowledgments
+      </h2>
+      <p>
+        Huge thanks to Ehsan Akhgari, Seth Ladd, Ian Hickson, Boris Smus, Damon
+        Douglas, Ilya Bogdanovich, Tab Atkins, and Domenic Denicola.
       </p>
     </section>
   </body>
