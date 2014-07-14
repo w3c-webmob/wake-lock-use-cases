@@ -186,6 +186,41 @@
       </section>
       <section>
         <h3>
+          Potential for abuse
+        </h3>
+        <p>
+          As with any device API on the Web, there is the risk that this API
+          could be intentionally or unintentionally abused by developers.
+        </p>
+        <p>
+          Abuse cases include, but are not limited to:
+        </p>
+        <ul>
+          <li>Requesting a wake lock on the system and/or the screen and then
+          not releasing it. For the screen wake lock, if the user does not
+          themselves power off the screen, this would cause the user's battery
+          to be drained more quickly than normal. Likewise with the system
+          lock.
+          </li>
+          <li>Requesting a system lock, and then exploiting it to perform
+          computationally expensive operations without the user's consent while
+          the screen is off (e.g., mining crypto-currencies and sending results
+          to a server).
+          </li>
+          <li>Combining a system lock with an API like Geolocation could allow
+          an application to track a user while the screen is off: as the system
+          is not actually powered-down, it could continue sending information
+          to a server without the user's knowledge.
+          </li>
+        </ul>
+        <p>
+          Ultimately, it will be up to user agents to mitigate these sorts of
+          abuse cases. However, the design of the API may also assist in
+          mitigating certain kinds of abuses.
+        </p>
+      </section>
+      <section>
+        <h3>
           Current workarounds
         </h3>
         <p>
