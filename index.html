@@ -540,6 +540,53 @@
     </section>
     <section>
       <h2>
+        Xee Photo Viewer
+      </h2>
+      <figure>
+        <img src="images/photoviewer.png" alt="" class="stretchy" width="336" height="189">
+        <figcaption>
+          Xee is one of image viewers for Mac OS that supports slide show view.
+        </figcaption>
+      </figure>
+      <dl>
+        <dt>
+          Why does the application need a wake lock?
+        </dt>
+        <dd>
+          It has slide show mode, when images from a folder are showing in some order
+          and automatically switch from previous to next with timeout. It may be very
+          annoying to users if device will go to sleep in the middle of interseting story,
+          related to photo gallery they watching - the display might be not very close to them,
+          there probably may be a password protection or other security check to pass
+          for getting back to gallery.
+        </dd>
+        <dt>
+          How does the user benefit?
+        </dt>
+        <dd>
+          When in slide show mode, the screen will stay 'awake' so users do not
+          need to physically interact with the device when watching photos
+          so they can focus on talking and interacting with each other.
+        </dd>
+        <dt>
+          When is the wake lock applied and released?
+        </dt>
+        <dd>
+          The screen lock is only applied when the user starts slide show. The
+          screen lock is released when slide show stops - it reaches the end of
+          photo stream or it gets interrupted by user.
+        </dd>
+      </dl>
+      <p>
+        Other applications that exhibit similar behavior:
+      </p>
+      <ul>
+        <li>FastStone Image Viewer for Windows</li>
+        <li>Another Photo Viewer for iOS</li>
+      </ul>
+    </section>
+    <section>
+      <h2>
         Firefox OS Contacts
       </h2>
       <figure>
