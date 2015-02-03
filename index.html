@@ -675,15 +675,14 @@
       </p>
       <ol>
         <li>MUST support requesting a wake lock on at least the
-        <strong>system</strong> and on the <strong>display</strong>. The
-        display being the screen or primary output modality of the device. The
-        system meaning that the device can put the screen to sleep, but MUST
-        continue running a task until an application releases the lock on the
-        system. Keeping the screen awake MUST (obviously) also keep the system
-        awake.
+         <strong>display</strong> — the
+        display being the screen or primary output modality of the device.</li>
         </li>
         <li>MUST be extensible, allowing for new types of locks to be specified
-        in the future.
+        in the future. Such a future lock would likely include a wake
+        lock on the <strong>system</strong> where the device can put
+        the screen to sleep but continues running a task until the
+        lock is released.
         </li>
         <li>MUST support a way for user agents to support wake locks only under
         specific security conditions (e.g., only in full screen).
